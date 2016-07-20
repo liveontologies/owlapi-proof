@@ -1,0 +1,49 @@
+package org.liveontologies.owlapi.proof;
+
+/*-
+ * #%L
+ * OWL API Proof Extension
+ * $Id:$
+ * $HeadURL:$
+ * %%
+ * Copyright (C) 2014 - 2016 Live Ontologies Project
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
+import org.liveontologies.owlapi.proof.util.ProofNode;
+import org.semanticweb.owlapi.model.OWLAxiom;
+import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import org.semanticweb.owlapi.reasoner.UnsupportedEntailmentTypeException;
+
+/**
+ * An {@link OWLReasoner} that can provide proofs for the entailed axioms.
+ * 
+ * @author Pavel Klinov
+ * 
+ *         pavel.klinov@uni-ulm.de
+ * 
+ * @author Yevgeny Kazakov
+ */
+public interface OWLProver extends OWLReasoner {
+
+	/**
+	 * @param entailment
+	 * @return {@link ProofNode} that represents proofs for entailed axiom
+	 * @throws UnsupportedEntailmentTypeException
+	 */
+	public OWLProofNode getProof(OWLAxiom entailment)
+			throws UnsupportedEntailmentTypeException;
+
+}
