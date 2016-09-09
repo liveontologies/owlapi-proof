@@ -37,6 +37,11 @@ class ExtendedProofStep<C> extends DelegatingProofStep<C> {
 	}
 
 	@Override
+	public ProofNode<C> getConclusion() {
+		return new ExtendedProofNode<C>(getDelegate().getConclusion(), statedAxioms_);
+	}
+	
+	@Override
 	public Collection<? extends ProofNode<C>> getPremises() {
 		List<ExtendedProofNode<C>> result = new ArrayList<ExtendedProofNode<C>>();
 		for (ProofNode<C> premise : getDelegate().getPremises()) {

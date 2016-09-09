@@ -95,7 +95,7 @@ public class MockProofNode<C> implements ProofNode<C> {
 
 		if (obj instanceof MockProofNode<?>) {
 			// unwrapping
-			return equals(((MockProofNode<?>) obj).member_);
+			return member_.equals(((MockProofNode<?>) obj).member_);
 		}
 		// else
 		return false;

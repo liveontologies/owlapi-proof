@@ -38,23 +38,23 @@ import org.junit.Test;
  * 
  * @author Yevgeny Kazakov
  */
-public class OWLExpressionTests {
+public class OWLExpressionTest {
 
 	@Test
 	public void blockCyclicProof() throws Exception {
 		MockProof<String> proof = MockProof.create();
-		proof.conclusion("A ⊑  B").premise("A ⊑  B ⊓ C");
-		proof.conclusion("A ⊑  B").premise("A ⊑  C").premise("C ⊑  B");
-		proof.conclusion("A ⊑  C").premise("A ⊑  D").premise("D ⊑  C");
-		proof.conclusion("A ⊑  D").premise("A ⊑  B").premise("B ⊑  D");
+		proof.conclusion("A ⊑ B").premise("A ⊑ B ⊓ C");
+		proof.conclusion("A ⊑ B").premise("A ⊑ C").premise("C ⊑ B");
+		proof.conclusion("A ⊑ C").premise("A ⊑ D").premise("D ⊑ C");
+		proof.conclusion("A ⊑ D").premise("A ⊑ B").premise("B ⊑ D");
 
 		Set<String> stated = new HashSet<String>(
-				Arrays.asList("A ⊑  B ⊓ C", "B ⊑  D", "D ⊑  C", "C ⊑  B"));
+				Arrays.asList("A ⊑ B ⊓ C", "B ⊑ D", "D ⊑ C", "C ⊑ B"));
 
-		assertTrue(OWLProofUtils.isDerivable(proof.getNode("A ⊑  C"), stated));
+		assertTrue(OWLProofUtils.isDerivable(proof.getNode("A ⊑ C"), stated));
 
 		ProofNode<String> root = OWLProofUtils
-				.addStatedAxioms(proof.getNode("A ⊑  B"), stated);
+				.addStatedAxioms(proof.getNode("A ⊑ B"), stated);
 
 		assertTrue(OWLProofUtils.isDerivable(root));
 
@@ -67,7 +67,7 @@ public class OWLExpressionTests {
 
 		// testing the same but using derivability "from" methods
 
-		root = proof.getNode("A ⊑  B");
+		root = proof.getNode("A ⊑ B");
 		assertTrue(OWLProofUtils.isDerivable(root, stated));
 
 		assertEquals(2, OWLProofUtils.eliminateNotDerivable(root, stated)

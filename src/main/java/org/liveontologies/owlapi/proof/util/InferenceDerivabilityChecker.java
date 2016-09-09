@@ -22,130 +22,203 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A utility to check derivability of conclusions by inferences (with optional
+ * set of "forbidden" conclusions that should not appear in proofs). A
+ * conclusion is derivable if it is a conclusion of an inference whose all
+ * premises are derivable.
+ * 
+ * @author Yevgeny Kazakov
+ *
+ * @param <C>
+ *            the type of conclusions supported by this checker
+ */
 public class InferenceDerivabilityChecker<C> implements DerivabilityChecker<C> {
 
 	// logger for this class
 	private static final Logger LOGGER_ = LoggerFactory
 			.getLogger(InferenceDerivabilityChecker.class);
 
+	/**
+	 * the inferences that can be used for deriving conclusions
+	 */
 	private final InferenceSet<C> inferences_;
 
-	private final Set<? extends C> forbiddenConclusions_;
+	/**
+	 * conclusions for which a derivability test was initiated or finished
+	 */
+	private final Set<C> goals_ = new HashSet<C>();
 
-	private final Deque<C> conclusionStack_ = new ArrayDeque<C>();
+	/**
+	 * {@link #goals_} that are not yet checked for derivability
+	 */
+	private final Queue<C> toCheck_ = new LinkedList<C>();
 
-	private final Deque<Iterator<? extends Inference<C>>> inferenceIteratorStack_ = new ArrayDeque<Iterator<? extends Inference<C>>>();
-
-	private final Deque<Iterator<? extends C>> conclusionIteratorStack_ = new ArrayDeque<Iterator<? extends C>>();
-
+	/**
+	 * {@link #goals_} that that were found derivable
+	 */
 	private final Set<C> derivable_ = new HashSet<C>();
 
-	private final Set<C> checked_ = new HashSet<C>();
+	/**
+	 * {@link #derivable_} goals not yet used to derived other {@link #goals_}
+	 */
+	private final Queue<C> toPropagate_ = new LinkedList<C>();
 
-	public InferenceDerivabilityChecker(InferenceSet<C> inferences,
-			Set<? extends C> forbiddenConclusions) {
-		this.inferences_ = inferences;
-		this.forbiddenConclusions_ = forbiddenConclusions;
-	}
+	/**
+	 * a map from {@link #toCheck_} goals to the list of inferences in which
+	 * this goal can be used as a premise; these inferences are "waiting" for
+	 * this conclusion to be derived
+	 */
+	private final Map<C, List<Inference<C>>> watchedInferences_ = new HashMap<C, List<Inference<C>>>();
+
+	/**
+	 * a map from {@link #toCheck_} goals to the iterator over the premises of
+	 * the corresponding inference in {@link #watchedInferences_} that currently
+	 * points to this goal (as it is one of the premises)
+	 */
+	private final Map<C, List<Iterator<? extends C>>> iterators_ = new HashMap<C, List<Iterator<? extends C>>>();
 
 	public InferenceDerivabilityChecker(InferenceSet<C> inferences) {
-		this(inferences, Collections.<C> emptySet());
+		this.inferences_ = inferences;
+	}
+
+	public InferenceDerivabilityChecker(final InferenceSet<C> inferences,
+			final Set<? extends C> forbidden) {
+		this(new InferenceSet<C>() {
+			@Override
+			public Collection<? extends Inference<C>> getInferences(
+					C conclusion) {
+				if (forbidden.contains(conclusion)) {
+					return Collections.emptySet();
+				}
+				// else
+				Collection<? extends Inference<C>> original = inferences
+						.getInferences(conclusion);
+				// filtering out inferences with forbidden premises
+				Collection<Inference<C>> result = new ArrayList<Inference<C>>(
+						original.size());
+				inference_loop: for (Inference<C> inf : original) {
+					for (C premise : inf.getPremises()) {
+						if (forbidden.contains(premise)) {
+							LOGGER_.trace("{}: ignored: {} is forbiden", inf,
+									premise);
+							continue inference_loop;
+						}
+					}
+					result.add(inf);
+				}
+				if (result.size() == original.size()) {
+					// nothing was removed
+					return original;
+				}
+				// else
+				return result;
+			}
+		});
 	}
 
 	@Override
 	public boolean isDerivable(C conclusion) {
-		if (forbiddenConclusions_.contains(conclusion)) {
-			return false;
-		}
-		// else
-		if (checked_.contains(conclusion)) {
-			return derivable_.contains(conclusion);
-		}
-		// else
-		conclusionStack_.push(conclusion);
-		LOGGER_.trace("{}: to check", conclusion);
-		return derivable();
+		LOGGER_.trace("{}: checking derivability", conclusion);
+		toCheck(conclusion);
+		process();
+		boolean derivable = derivable_.contains(conclusion);
+		LOGGER_.trace("{}: derivable: {}", conclusion, derivable);
+		return derivable;
 	}
 
-	boolean derivable() {
-		first_loop: for (;;) {
-			C nextConclusion = conclusionStack_.peek();
-			inferenceIteratorStack_
-					.push(inferences_.getInferences(nextConclusion).iterator());
-			second_loop: for (;;) {
-				Iterator<? extends Inference<C>> infIter = inferenceIteratorStack_
-						.peek();
-				if (infIter.hasNext()) {
-					Collection<? extends C> premises = infIter.next()
-							.getPremises();
-					LOGGER_.trace("{}: check premises", premises);
-					conclusionIteratorStack_.push(premises.iterator());
-				} else {
-					// conclusion not derivable
-					inferenceIteratorStack_.pop();
-					nextConclusion = conclusionStack_.pop();
-					LOGGER_.trace("{}: not provable", nextConclusion);
-					if (conclusionIteratorStack_.peek() == null) {
-						return false;
-					} else {
-						conclusionIteratorStack_.pop();
-						continue second_loop;
-					}
+	private void process() {
+		for (;;) {
+			C next = toCheck_.poll();
+
+			if (next != null) {
+				for (Inference<C> inf : inferences_.getInferences(next)) {
+					LOGGER_.trace("{}: expanding", inf);
+					check(inf.getPremises().iterator(), inf);
 				}
-				third_loop: for (;;) {
-					Iterator<? extends C> conclIter = conclusionIteratorStack_
-							.peek();
-					if (conclIter == null) {
-						return true;
-					}
-					if (conclIter.hasNext()) {
-						nextConclusion = conclIter.next();
-						if (forbiddenConclusions_.contains(nextConclusion)) {
-							// conclusion cannot be used
-							LOGGER_.trace("{}: not provable [forbidden]",
-									nextConclusion);
-							conclusionIteratorStack_.pop();
-							continue second_loop;
-						} else if (derivable_.contains(nextConclusion)) {
-							// derivable
-							LOGGER_.trace("{}: provable [before]",
-									nextConclusion);
-							continue third_loop;
-						} else if (checked_.add(nextConclusion)) {
-							// new
-							conclusionStack_.push(nextConclusion);
-							LOGGER_.trace("{}: to check", nextConclusion);
-							continue first_loop;
-						} else {
-							// already on stack or not derivable
-							LOGGER_.trace("{}: not provable [before]",
-									nextConclusion);
-							conclusionIteratorStack_.pop();
-							continue second_loop;
-						}
-					} else {
-						// all conclusions proved
-						conclusionIteratorStack_.pop();
-						inferenceIteratorStack_.pop();
-						nextConclusion = conclusionStack_.pop();
-						derivable_.add(nextConclusion);
-						LOGGER_.trace("{}: provable", nextConclusion);
-						continue third_loop;
-					}
+				continue;
+			}
+
+			next = toPropagate_.poll();
+
+			if (next != null) {
+				List<Inference<C>> watched = watchedInferences_.remove(next);
+				if (watched == null) {
+					continue;
 				}
+				List<Iterator<? extends C>> premiseIterators = iterators_
+						.remove(next);
+				for (int i = 0; i < watched.size(); i++) {
+					Inference<C> inf = watched.get(i);
+					Iterator<? extends C> iterator = premiseIterators.get(i);
+					check(iterator, inf);
+				}
+				continue;
+			}
+
+			// all done
+			return;
+
+		}
+
+	}
+
+	private void toCheck(C conclusion) {
+		if (goals_.add(conclusion)) {
+			LOGGER_.trace("{}: new goal", conclusion);
+			toCheck_.add(conclusion);
+		}
+	}
+
+	private void addWatch(C premise, Iterator<? extends C> premiseIterator,
+			Inference<C> inf) {
+		List<Inference<C>> inferences = watchedInferences_.get(premise);
+		List<Iterator<? extends C>> premiseIterators = iterators_.get(premise);
+		if (inferences == null) {
+			inferences = new ArrayList<Inference<C>>();
+			watchedInferences_.put(premise, inferences);
+			premiseIterators = new ArrayList<Iterator<? extends C>>();
+			iterators_.put(premise, premiseIterators);
+		}
+		inferences.add(inf);
+		premiseIterators.add(premiseIterator);
+		toCheck(premise);
+	}
+
+	private void proved(C conclusion) {
+		if (derivable_.add(conclusion)) {
+			LOGGER_.trace("{}: derived", conclusion);
+			toPropagate_.add(conclusion);
+		}
+	}
+
+	private void check(Iterator<? extends C> premiseIterator,
+			Inference<C> inf) {
+		while (premiseIterator.hasNext()) {
+			C next = premiseIterator.next();
+			if (!derivable_.contains(next)) {
+				addWatch(next, premiseIterator, inf);
+				return;
 			}
 		}
+		// all premises are derived
+		LOGGER_.trace("{}: fire", inf);
+		proved(inf.getConclusion());
 	}
 
 }
