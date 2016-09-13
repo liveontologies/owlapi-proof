@@ -22,43 +22,41 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
-class AcyclicDerivableProofNode<C> extends DerivableProofNode<C> {
+class AcyclicDerivableProofNode<C> extends AcyclicProofNode<C> {
 
-	private final AcyclicDerivableProofNode<C> parent_;
-
-	AcyclicDerivableProofNode(ProofNode<C> delegate, AcyclicDerivableProofNode<C> parent) {
-		super(delegate);
-		this.parent_ = parent;
+	AcyclicDerivableProofNode(ProofNode<C> delegate,
+			AcyclicDerivableProofNode<C> parent) {
+		super(delegate, parent);
 	}
 
 	AcyclicDerivableProofNode(ProofNode<C> delegate) {
 		super(delegate);
-		this.parent_ = null;
 	}
 
 	@Override
-	DerivabilityChecker<ProofNode<C>> getDerivabilityChecker() {
-		return new ProofNodeDerivabilityChecker<C>(getBlockedNodes());
-	}
-
-	@Override
-	ProofStep<C> convert(ProofStep<C> inference) {
-		return new AcyclicDerivableProofStep<C>(inference, this);
-	}
-
-	protected Set<ProofNode<C>> getBlockedNodes() {
-		Set<ProofNode<C>> result = new HashSet<ProofNode<C>>();
-		AcyclicDerivableProofNode<C> next = this;
-		do {
-			// the original nodes that should be disregarded for checking
-			// derivability
-			result.add(next.getDelegate());
-			next = next.parent_;
-		} while (next != null);
+	public Collection<ProofStep<C>> getInferences() {
+		ProofNode<C> testNode = getDelegate();
+		testNode = new FilteredProofNode<>(getDelegate(), getBlockedNodes());
+		ProofNodeDerivabilityChecker<C> checker = new ProofNodeDerivabilityChecker<C>();
+		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
+		inference_loop: for (ProofStep<C> step : testNode.getInferences()) {
+			for (ProofNode<C> premise : step.getPremises()) {
+				if (!checker.isDerivable(premise)) {
+					continue inference_loop;
+				}
+			}
+			step = ((DelegatingProofStep<C>) step).getDelegate();
+			result.add(convert(step));
+		}
 		return result;
+	}
+
+	@Override
+	protected AcyclicDerivableProofStep<C> convert(ProofStep<C> step) {
+		return new AcyclicDerivableProofStep<>(step, this);
 	}
 
 }

@@ -29,11 +29,16 @@ import java.util.Set;
  */
 
 /**
+ * A collection of static utilities for manipulation with {@link ProofNode}
+ * 
  * @author Pavel Klinov
  *
  *         pavel.klinov@uni-ulm.de
+ * 
+ * @author Yevgeny Kazakov
+ *
  */
-public class OWLProofUtils {
+public class ProofNodes {
 
 	public static <C> ProofNode<C> addStatedAxioms(ProofNode<C> node,
 			Set<C> statedAxioms) {
@@ -85,8 +90,8 @@ public class OWLProofUtils {
 
 	public static <C> boolean isDerivable(ProofNode<C> node,
 			Set<C> statedAxioms) {
-		return new ProofNodeDerivabilityFromChecker<C>(statedAxioms)
-				.isDerivable(node);
+		return new ProofNodeDerivabilityChecker<C>()
+				.isDerivable(new ExtendedProofNode<>(node, statedAxioms));
 	}
 
 	public static <C> String print(ProofNode<C> node) {

@@ -24,7 +24,7 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Set;
 
-class AcyclicDerivableFromProofStep<C> extends AcyclicDerivableProofStep<C> {
+class AcyclicDerivableFromProofStep<C> extends AcyclicProofStep<C> {
 
 	private final Set<? extends C> statedAxioms_;
 
@@ -36,9 +36,10 @@ class AcyclicDerivableFromProofStep<C> extends AcyclicDerivableProofStep<C> {
 	}
 
 	@Override
-	ProofNode<C> convert(ProofNode<C> premise) {
+	protected AcyclicDerivableFromProofNode<C> convert(ProofNode<C> premise) {
 		return new AcyclicDerivableFromProofNode<C>(premise,
-				(AcyclicDerivableFromProofNode<C>) getConclusion(), statedAxioms_);
+				(AcyclicDerivableFromProofNode<C>) getConclusion(),
+				statedAxioms_);
 	}
 
 }

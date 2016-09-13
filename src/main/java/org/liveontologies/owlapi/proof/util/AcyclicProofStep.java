@@ -22,11 +22,21 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-public class ProofNodeDerivabilityChecker<C>
-		extends InferenceDerivabilityChecker<ProofNode<C>> {
+abstract class AcyclicProofStep<C> extends ConvertedProofStep<C> {
 
-	public ProofNodeDerivabilityChecker() {
-		super(ProofNodeInferenceSet.<C> get());
+	private final AcyclicProofNode<C> conclusion_;
+
+	AcyclicProofStep(ProofStep<C> delegate, AcyclicProofNode<C> conclusion) {
+		super(delegate);
+		this.conclusion_ = conclusion;
 	}
+
+	@Override
+	public AcyclicProofNode<C> getConclusion() {
+		return conclusion_;
+	}
+
+	@Override
+	protected abstract AcyclicProofNode<C> convert(ProofNode<C> node);
 
 }

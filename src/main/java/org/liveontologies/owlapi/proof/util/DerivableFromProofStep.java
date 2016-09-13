@@ -24,18 +24,18 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Set;
 
-class DerivableFromProofStep<C> extends DerivableProofStep<C> {
+class DerivableFromProofStep<C> extends ConvertedProofStep<C> {
 
 	private final Set<? extends C> statedAxioms_;
 
 	DerivableFromProofStep(ProofStep<C> delegate,
-			DerivableProofNode<C> conclusion, Set<? extends C> statedAxioms) {
-		super(delegate, conclusion);
+			Set<? extends C> statedAxioms) {
+		super(delegate);
 		this.statedAxioms_ = statedAxioms;
 	}
 
 	@Override
-	ProofNode<C> convert(ProofNode<C> premise) {
+	protected DerivableFromProofNode<C> convert(ProofNode<C> premise) {
 		return new DerivableFromProofNode<C>(premise, statedAxioms_);
 	}
 

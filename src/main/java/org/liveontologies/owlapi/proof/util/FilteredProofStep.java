@@ -22,11 +22,21 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-public class ProofNodeDerivabilityChecker<C>
-		extends InferenceDerivabilityChecker<ProofNode<C>> {
+import java.util.Set;
 
-	public ProofNodeDerivabilityChecker() {
-		super(ProofNodeInferenceSet.<C> get());
+class FilteredProofStep<C> extends ConvertedProofStep<C> {
+
+	private final Set<? extends ProofNode<C>> forbidden_;
+
+	FilteredProofStep(ProofStep<C> delegate,
+			Set<? extends ProofNode<C>> forbidden) {
+		super(delegate);
+		this.forbidden_ = forbidden;
+	}
+
+	@Override
+	protected FilteredProofNode<C> convert(ProofNode<C> premise) {
+		return new FilteredProofNode<>(premise, forbidden_);
 	}
 
 }

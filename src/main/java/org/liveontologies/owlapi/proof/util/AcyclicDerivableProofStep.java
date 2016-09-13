@@ -22,14 +22,15 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-class AcyclicDerivableProofStep<C> extends DerivableProofStep<C> {
+class AcyclicDerivableProofStep<C> extends AcyclicProofStep<C> {
 
-	AcyclicDerivableProofStep(ProofStep<C> delegate, AcyclicDerivableProofNode<C> conclusion) {
+	AcyclicDerivableProofStep(ProofStep<C> delegate,
+			AcyclicDerivableProofNode<C> conclusion) {
 		super(delegate, conclusion);
 	}
 
 	@Override
-	ProofNode<C> convert(ProofNode<C> premise) {
+	protected AcyclicDerivableProofNode<C> convert(ProofNode<C> premise) {
 		return new AcyclicDerivableProofNode<C>(premise,
 				(AcyclicDerivableProofNode<C>) getConclusion());
 	}

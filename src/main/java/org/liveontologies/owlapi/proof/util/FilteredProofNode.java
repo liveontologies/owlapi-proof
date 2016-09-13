@@ -24,33 +24,43 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
-class DerivableProofNode<C> extends ConvertedProofNode<C> {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	DerivableProofNode(ProofNode<C> delegate) {
+class FilteredProofNode<C> extends ConvertedProofNode<C> {
+
+	// logger for this class
+	private static final Logger LOGGER_ = LoggerFactory
+			.getLogger(FilteredProofNode.class);
+
+	private final Set<? extends ProofNode<C>> forbidden_;
+
+	FilteredProofNode(ProofNode<C> delegate,
+			Set<? extends ProofNode<C>> forbidden) {
 		super(delegate);
+		this.forbidden_ = forbidden;
 	}
 
 	@Override
 	public Collection<ProofStep<C>> getInferences() {
-		// converting original inferences that have only derivable premises
 		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
-		ProofNodeDerivabilityChecker<C> checker = new ProofNodeDerivabilityChecker<C>();
-		inference_loop: for (ProofStep<C> step : getDelegate()
-				.getInferences()) {
-			for (ProofNode<C> premise : step.getPremises()) {
-				if (!checker.isDerivable(premise)) {
+		inference_loop: for (ProofStep<C> inf : getDelegate().getInferences()) {
+			for (ProofNode<C> premise : inf.getPremises()) {
+				if (forbidden_.contains(premise)) {
+					LOGGER_.trace("{}: ignored: {} is forbiden", inf, premise);
 					continue inference_loop;
 				}
 			}
-			result.add(convert(step));
+			result.add(convert(inf));
 		}
 		return result;
 	}
 
 	@Override
-	protected DerivableProofStep<C> convert(ProofStep<C> inf) {
-		return new DerivableProofStep<>(inf);
+	protected FilteredProofStep<C> convert(ProofStep<C> inf) {
+		return new FilteredProofStep<C>(inf, forbidden_);
 	}
 
 }

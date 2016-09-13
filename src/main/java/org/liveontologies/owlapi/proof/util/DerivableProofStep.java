@@ -22,36 +22,15 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+class DerivableProofStep<C> extends ConvertedProofStep<C> {
 
-class DerivableProofStep<C> extends DelegatingProofStep<C> {
-
-	private final DerivableProofNode<C> conclusion_;
-
-	DerivableProofStep(ProofStep<C> delegate,
-			DerivableProofNode<C> conclusion) {
+	DerivableProofStep(ProofStep<C> delegate) {
 		super(delegate);
-		this.conclusion_ = conclusion;
 	}
 
 	@Override
-	public ProofNode<C> getConclusion() {
-		return conclusion_;
-	}
-
-	ProofNode<C> convert(ProofNode<C> premise) {
+	protected DerivableProofNode<C> convert(ProofNode<C> premise) {
 		return new DerivableProofNode<C>(premise);
-	}
-
-	@Override
-	public Collection<? extends ProofNode<C>> getPremises() {
-		List<ProofNode<C>> result = new ArrayList<ProofNode<C>>();
-		for (ProofNode<C> premise : getDelegate().getPremises()) {
-			result.add(convert(premise));
-		}
-		return result;
 	}
 
 }

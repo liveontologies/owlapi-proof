@@ -22,11 +22,35 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-public class ProofNodeDerivabilityChecker<C>
-		extends InferenceDerivabilityChecker<ProofNode<C>> {
+import java.util.HashSet;
+import java.util.Set;
 
-	public ProofNodeDerivabilityChecker() {
-		super(ProofNodeInferenceSet.<C> get());
+abstract class AcyclicProofNode<C> extends ConvertedProofNode<C> {
+
+	private final AcyclicProofNode<C> parent_;
+
+	AcyclicProofNode(ProofNode<C> delegate, AcyclicProofNode<C> parent) {
+		super(delegate);
+		this.parent_ = parent;
+	}
+
+	AcyclicProofNode(ProofNode<C> delegate) {
+		this(delegate, null);
+	}
+
+	/**
+	 * @param node
+	 * @return the original nodes which should not be used as premises of
+	 *         inferences
+	 */
+	Set<ProofNode<C>> getBlockedNodes() {
+		Set<ProofNode<C>> result = new HashSet<ProofNode<C>>();
+		AcyclicProofNode<C> node = this;
+		do {
+			result.add(node.getDelegate());
+			node = node.parent_;
+		} while (node != null);
+		return result;
 	}
 
 }

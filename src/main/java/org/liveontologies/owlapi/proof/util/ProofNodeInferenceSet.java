@@ -24,11 +24,18 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Collection;
 
-public class ProofNodeInferenceSet<C>
-		implements InferenceSet<ProofNode<C>> {
+public class ProofNodeInferenceSet<C> implements InferenceSet<ProofNode<C>> {
+
+	@SuppressWarnings("rawtypes")
+	private static ProofNodeInferenceSet INSTANCE_ = new ProofNodeInferenceSet<>();
+
+	@SuppressWarnings("unchecked")
+	public static <C> ProofNodeInferenceSet<C> get() {
+		return INSTANCE_;
+	}
 
 	@Override
-	public Collection<? extends Inference<ProofNode<C>>> getInferences(
+	public Collection<? extends ProofStep<C>> getInferences(
 			ProofNode<C> conclusion) {
 		return conclusion.getInferences();
 	}

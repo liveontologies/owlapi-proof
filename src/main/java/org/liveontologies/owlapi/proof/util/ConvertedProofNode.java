@@ -25,32 +25,23 @@ package org.liveontologies.owlapi.proof.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
-class DerivableProofNode<C> extends ConvertedProofNode<C> {
+abstract class ConvertedProofNode<C> extends DelegatingProofNode<C> {
 
-	DerivableProofNode(ProofNode<C> delegate) {
+	protected ConvertedProofNode(ProofNode<C> delegate) {
 		super(delegate);
 	}
 
 	@Override
 	public Collection<ProofStep<C>> getInferences() {
-		// converting original inferences that have only derivable premises
-		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
-		ProofNodeDerivabilityChecker<C> checker = new ProofNodeDerivabilityChecker<C>();
-		inference_loop: for (ProofStep<C> step : getDelegate()
-				.getInferences()) {
-			for (ProofNode<C> premise : step.getPremises()) {
-				if (!checker.isDerivable(premise)) {
-					continue inference_loop;
-				}
-			}
+		Collection<? extends ProofStep<C>> original = super.getInferences();
+		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>(
+				original.size());
+		for (ProofStep<C> step : original) {
 			result.add(convert(step));
 		}
 		return result;
 	}
 
-	@Override
-	protected DerivableProofStep<C> convert(ProofStep<C> inf) {
-		return new DerivableProofStep<>(inf);
-	}
+	protected abstract ConvertedProofStep<C> convert(ProofStep<C> step);
 
 }

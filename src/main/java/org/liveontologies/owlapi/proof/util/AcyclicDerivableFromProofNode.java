@@ -1,5 +1,8 @@
 package org.liveontologies.owlapi.proof.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 /*-
  * #%L
  * OWL API Proof Extension
@@ -24,8 +27,7 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Set;
 
-public class AcyclicDerivableFromProofNode<C>
-		extends AcyclicDerivableProofNode<C> {
+class AcyclicDerivableFromProofNode<C> extends AcyclicProofNode<C> {
 
 	private final Set<? extends C> statedAxioms_;
 
@@ -43,15 +45,27 @@ public class AcyclicDerivableFromProofNode<C>
 	}
 
 	@Override
-	DerivabilityChecker<ProofNode<C>> getDerivabilityChecker() {
-		return new ProofNodeDerivabilityFromChecker<C>(getBlockedNodes(),
-				statedAxioms_);
+	public Collection<ProofStep<C>> getInferences() {
+		ProofNode<C> testNode = getDelegate();
+		testNode = new FilteredProofNode<>(getDelegate(), getBlockedNodes());
+		ProofNodeDerivabilityChecker<C> checker = new ProofNodeDerivabilityChecker<C>();
+		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
+		inference_loop: for (ProofStep<C> step : testNode.getInferences()) {
+			for (ProofNode<C> premise : step.getPremises()) {
+				premise = new ExtendedProofNode<>(premise, statedAxioms_);
+				if (!checker.isDerivable(premise)) {
+					continue inference_loop;
+				}
+			}
+			step = ((DelegatingProofStep<C>) step).getDelegate();
+			result.add(convert(step));
+		}
+		return result;
 	}
 
 	@Override
-	ProofStep<C> convert(ProofStep<C> inference) {
-		return new AcyclicDerivableFromProofStep<C>(inference, this,
-				statedAxioms_);
+	protected AcyclicDerivableFromProofStep<C> convert(ProofStep<C> step) {
+		return new AcyclicDerivableFromProofStep<>(step, this, statedAxioms_);
 	}
 
 }

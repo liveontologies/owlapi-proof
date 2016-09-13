@@ -22,12 +22,9 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
-class ExtendedProofStep<C> extends DelegatingProofStep<C> {
+class ExtendedProofStep<C> extends ConvertedProofStep<C> {
 
 	private final Set<? extends C> statedAxioms_;
 
@@ -37,17 +34,8 @@ class ExtendedProofStep<C> extends DelegatingProofStep<C> {
 	}
 
 	@Override
-	public ProofNode<C> getConclusion() {
-		return new ExtendedProofNode<C>(getDelegate().getConclusion(), statedAxioms_);
-	}
-	
-	@Override
-	public Collection<? extends ProofNode<C>> getPremises() {
-		List<ExtendedProofNode<C>> result = new ArrayList<ExtendedProofNode<C>>();
-		for (ProofNode<C> premise : getDelegate().getPremises()) {
-			result.add(new ExtendedProofNode<C>(premise, statedAxioms_));
-		}
-		return result;
+	protected ConvertedProofNode<C> convert(ProofNode<C> node) {
+		return new ExtendedProofNode<C>(node, statedAxioms_);
 	}
 
 }
