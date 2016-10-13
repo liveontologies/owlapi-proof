@@ -92,10 +92,11 @@ public class OWLExpressionTest {
 		ProofNode<Integer> root = ProofNodes
 				.addStatedAxioms(proof.getNode(0), stated);
 
-//		assertTrue(OWLProofUtils.isDerivable(root));
-//
-//		assertEquals(2, OWLProofUtils.eliminateNotDerivable(root)
-//				.getInferences().size());
+		assertTrue(ProofNodes.isDerivable(root));
+
+		// everything is derivable
+		assertEquals(2, ProofNodes.eliminateNotDerivable(root)
+				.getInferences().size());
 
 		// only one inference remains since the other is cyclic
 		assertEquals(1, ProofNodes.eliminateNotDerivableAndCycles(root)
