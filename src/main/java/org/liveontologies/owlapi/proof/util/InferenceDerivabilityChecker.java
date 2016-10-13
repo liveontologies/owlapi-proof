@@ -114,6 +114,21 @@ public class InferenceDerivabilityChecker<C> implements DerivabilityChecker<C> {
 		return derivable;
 	}
 
+	/**
+	 * @return all conclusions that could not be derived in tests for
+	 *         derivability. It guarantees to contain all conclusions for which
+	 *         {@link #isDerivable(Object)} returns {@code false} and also at
+	 *         least one premise for each inference producing an element in this
+	 *         set. But this set may also grow if {@link #isDerivable(Object)}
+	 *         returns {@code true} (e.g., if the conclusion is derivable by one
+	 *         inference but has another inference in which some premise is not
+	 *         derivable). This set is mostly useful for debugging issues with
+	 *         derivability.
+	 */
+	public Set<? extends C> getNonDerivableConclusions() {
+		return watchedInferences_.keySet();
+	}
+
 	private void process() {
 		for (;;) {
 			C next = toCheck_.poll();

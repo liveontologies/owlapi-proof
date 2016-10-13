@@ -22,8 +22,25 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
+/**
+ * Testing derivability of conclusions using inferences. A conclusion is
+ * derivable either if it is a conclusion of an inference with zero premises or
+ * a conclusion of an inference all of which premises are derivable.
+ * 
+ * @author Yevgeny Kazakov
+ *
+ * @param <C>
+ */
 public interface DerivabilityChecker<C> {
 
+	/**
+	 * Checks if a given conclusion is derivable
+	 * 
+	 * @param conclusion
+	 *            the conclusion to be tested for derivability
+	 * @return {@code true} if conclusion is derivable and {@code false}
+	 *         otherwise
+	 */
 	public boolean isDerivable(C conclusion);
 
 }
