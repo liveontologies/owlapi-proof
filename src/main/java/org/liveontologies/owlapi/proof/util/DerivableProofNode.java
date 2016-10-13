@@ -50,7 +50,7 @@ class DerivableProofNode<C> extends ConvertedProofNode<C> {
 
 	@Override
 	protected DerivableProofStep<C> convert(ProofStep<C> inf) {
-		return new DerivableProofStep<>(inf);
+		return new DerivableProofStep<C>(inf);
 	}
 
 }

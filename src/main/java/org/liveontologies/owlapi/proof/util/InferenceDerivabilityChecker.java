@@ -62,43 +62,43 @@ public class InferenceDerivabilityChecker<C> implements DerivabilityChecker<C> {
 	/**
 	 * conclusions for which a derivability test was initiated or finished
 	 */
-	private final Set<C> goals_ = new HashSet<>();
+	private final Set<C> goals_ = new HashSet<C>();
 
 	/**
 	 * {@link #goals_} that are not yet checked for derivability
 	 */
-	private final Queue<C> toCheck_ = new LinkedList<>();
+	private final Queue<C> toCheck_ = new LinkedList<C>();
 
 	/**
 	 * {@link #goals_} that that were found derivable
 	 */
-	private final Set<C> derivable_ = new HashSet<>();
+	private final Set<C> derivable_ = new HashSet<C>();
 
 	/**
 	 * queue of iterators over yet unexpanded inferences for conclusions; when
 	 * inference is expanded, derivibility of its premises is recursively
 	 * checked; all iterators must have the next elements
 	 */
-	private final Deque<Iterator<? extends Inference<C>>> toExpand_ = new ArrayDeque<>();
+	private final Deque<Iterator<? extends Inference<C>>> toExpand_ = new ArrayDeque<Iterator<? extends Inference<C>>>();
 
 	/**
 	 * {@link #derivable_} goals not yet used to derived other {@link #goals_}
 	 */
-	private final Queue<C> toPropagate_ = new LinkedList<>();
+	private final Queue<C> toPropagate_ = new LinkedList<C>();
 
 	/**
 	 * a map from {@link #toCheck_} goals to the list of inferences in which
 	 * this goal can be used as a premise; these inferences are "waiting" for
 	 * this conclusion to be derived
 	 */
-	private final Map<C, List<Inference<C>>> watchedInferences_ = new HashMap<>();
+	private final Map<C, List<Inference<C>>> watchedInferences_ = new HashMap<C, List<Inference<C>>>();
 
 	/**
 	 * a map from {@link #toCheck_} goals to the iterator over the premises of
 	 * the corresponding inference in {@link #watchedInferences_} that currently
 	 * points to this goal (as it is one of the premises)
 	 */
-	private final Map<C, List<Iterator<? extends C>>> premiseIteratorsMap_ = new HashMap<>();
+	private final Map<C, List<Iterator<? extends C>>> premiseIteratorsMap_ = new HashMap<C, List<Iterator<? extends C>>>();
 
 	public InferenceDerivabilityChecker(InferenceSet<C> inferences) {
 		this.inferences_ = inferences;

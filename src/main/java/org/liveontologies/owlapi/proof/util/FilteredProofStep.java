@@ -36,7 +36,7 @@ class FilteredProofStep<C> extends ConvertedProofStep<C> {
 
 	@Override
 	protected FilteredProofNode<C> convert(ProofNode<C> premise) {
-		return new FilteredProofNode<>(premise, forbidden_);
+		return new FilteredProofNode<C>(premise, forbidden_);
 	}
 
 }

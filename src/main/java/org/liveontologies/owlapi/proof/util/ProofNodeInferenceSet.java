@@ -27,7 +27,7 @@ import java.util.Collection;
 public class ProofNodeInferenceSet<C> implements InferenceSet<ProofNode<C>> {
 
 	@SuppressWarnings("rawtypes")
-	private static ProofNodeInferenceSet INSTANCE_ = new ProofNodeInferenceSet<>();
+	private static ProofNodeInferenceSet INSTANCE_ = new ProofNodeInferenceSet<Object>();
 
 	@SuppressWarnings("unchecked")
 	public static <C> ProofNodeInferenceSet<C> get() {

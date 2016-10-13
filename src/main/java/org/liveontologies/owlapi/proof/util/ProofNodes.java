@@ -91,7 +91,7 @@ public class ProofNodes {
 	public static <C> boolean isDerivable(ProofNode<C> node,
 			Set<C> statedAxioms) {
 		return new ProofNodeDerivabilityChecker<C>()
-				.isDerivable(new ExtendedProofNode<>(node, statedAxioms));
+				.isDerivable(new ExtendedProofNode<C>(node, statedAxioms));
 	}
 
 	public static <C> String print(ProofNode<C> node) {

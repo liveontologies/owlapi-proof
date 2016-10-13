@@ -39,9 +39,9 @@ class DerivableFromProofNode<C> extends ConvertedProofNode<C> {
 
 	@Override
 	public Collection<ProofStep<C>> getInferences() {
-		ProofNode<C> testNode = new ExtendedProofNode<>(getDelegate(),
+		ProofNode<C> testNode = new ExtendedProofNode<C>(getDelegate(),
 				statedAxioms_);
-		testNode = new DerivableProofNode<>(testNode);
+		testNode = new DerivableProofNode<C>(testNode);
 		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
 		for (ProofStep<C> step : testNode.getInferences()) {
 			step = ((DelegatingProofStep<C>) step).getDelegate();
