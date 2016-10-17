@@ -24,45 +24,21 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Collection;
 
-public class DelegatingProofNode<C> implements ProofNode<C> {
-
-	private final ProofNode<C> delegate_;
+public class DelegatingProofNode<C> extends Delegator<ProofNode<C>>
+		implements ProofNode<C> {
 
 	protected DelegatingProofNode(ProofNode<C> delegate) {
-		this.delegate_ = delegate;
-	}
-
-	protected ProofNode<C> getDelegate() {
-		return delegate_;
+		super(delegate);
 	}
 
 	@Override
 	public C getMember() {
-		return delegate_.getMember();
+		return getDelegate().getMember();
 	}
 
 	@Override
 	public Collection<? extends ProofStep<C>> getInferences() {
-		return delegate_.getInferences();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof DelegatingProofNode<?>) {
-			return delegate_.equals(((DelegatingProofNode<?>) o).delegate_);
-		}
-		// else
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return delegate_.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return delegate_.toString();
+		return getDelegate().getInferences();
 	}
 
 }

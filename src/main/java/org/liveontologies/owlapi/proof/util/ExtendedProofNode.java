@@ -24,6 +24,7 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 class ExtendedProofNode<C> extends ConvertedProofNode<C>
@@ -63,7 +64,7 @@ class ExtendedProofNode<C> extends ConvertedProofNode<C>
 	}
 
 	@Override
-	public Collection<? extends ProofNode<C>> getPremises() {
+	public List<? extends ProofNode<C>> getPremises() {
 		return Collections.emptyList();
 	}
 

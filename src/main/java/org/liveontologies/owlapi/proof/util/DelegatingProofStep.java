@@ -22,38 +22,28 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.Collection;
+import java.util.List;
 
-public class DelegatingProofStep<C> implements ProofStep<C> {
-
-	private final ProofStep<C> delegate_;
+public class DelegatingProofStep<C> extends Delegator<ProofStep<C>>
+		implements ProofStep<C> {
 
 	protected DelegatingProofStep(ProofStep<C> delegate) {
-		this.delegate_ = delegate;
-	}
-
-	protected ProofStep<C> getDelegate() {
-		return delegate_;
+		super(delegate);
 	}
 
 	@Override
 	public String getName() {
-		return delegate_.getName();
+		return getDelegate().getName();
 	}
 
 	@Override
 	public ProofNode<C> getConclusion() {
-		return delegate_.getConclusion();
+		return getDelegate().getConclusion();
 	}
 
 	@Override
-	public Collection<? extends ProofNode<C>> getPremises() {
-		return delegate_.getPremises();
-	}
-
-	@Override
-	public String toString() {
-		return delegate_.toString();
+	public List<? extends ProofNode<C>> getPremises() {
+		return getDelegate().getPremises();
 	}
 
 }

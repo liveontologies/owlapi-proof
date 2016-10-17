@@ -46,8 +46,8 @@ class AcyclicDerivableFromProofNode<C> extends AcyclicProofNode<C> {
 
 	@Override
 	public Collection<ProofStep<C>> getInferences() {
-		ProofNode<C> testNode = getDelegate();
-		testNode = new FilteredProofNode<C>(getDelegate(), getBlockedNodes());
+		ProofNode<C> testNode = new FilteredProofNode<C>(getDelegate(),
+				getBlockedNodes());
 		ProofNodeDerivabilityChecker<C> checker = new ProofNodeDerivabilityChecker<C>();
 		Collection<ProofStep<C>> result = new ArrayList<ProofStep<C>>();
 		inference_loop: for (ProofStep<C> step : testNode.getInferences()) {

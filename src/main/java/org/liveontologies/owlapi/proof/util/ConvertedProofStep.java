@@ -23,7 +23,7 @@ package org.liveontologies.owlapi.proof.util;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 abstract class ConvertedProofStep<C> extends DelegatingProofStep<C> {
 
@@ -32,8 +32,8 @@ abstract class ConvertedProofStep<C> extends DelegatingProofStep<C> {
 	}
 
 	@Override
-	public Collection<ProofNode<C>> getPremises() {
-		Collection<ProofNode<C>> result = new ArrayList<ProofNode<C>>();
+	public List<ProofNode<C>> getPremises() {
+		List<ProofNode<C>> result = new ArrayList<ProofNode<C>>();
 		for (ProofNode<C> node : super.getPremises()) {
 			result.add(convert(node));
 		}

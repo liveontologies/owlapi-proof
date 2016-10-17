@@ -23,7 +23,7 @@ package org.liveontologies.owlapi.proof.util;
  */
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Pavel Klinov pavel.klinov@uni-ulm.de
@@ -39,10 +39,10 @@ public class MockProofStep<C> implements ProofStep<C> {
 
 	private final ProofNode<C> conclusion_;
 
-	private final Collection<ProofNode<C>> premises_;
+	private final List<ProofNode<C>> premises_;
 
 	public static <C> MockProofStep<C> create(String name,
-			ProofNode<C> conclusion, Collection<ProofNode<C>> premises) {
+			ProofNode<C> conclusion, List<ProofNode<C>> premises) {
 		return new MockProofStep<C>(name, conclusion, premises);
 	}
 
@@ -53,7 +53,7 @@ public class MockProofStep<C> implements ProofStep<C> {
 	}
 
 	private MockProofStep(String name, ProofNode<C> conclusion,
-			Collection<ProofNode<C>> premises) {
+			List<ProofNode<C>> premises) {
 		name_ = name;
 		conclusion_ = conclusion;
 		premises_ = premises;
@@ -70,7 +70,7 @@ public class MockProofStep<C> implements ProofStep<C> {
 	}
 
 	@Override
-	public Collection<? extends ProofNode<C>> getPremises() {
+	public List<? extends ProofNode<C>> getPremises() {
 		return premises_;
 	}
 

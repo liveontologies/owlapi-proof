@@ -22,7 +22,7 @@ package org.liveontologies.owlapi.proof;
  * #L%
  */
 
-import java.util.Collection;
+import java.util.List;
 
 import org.liveontologies.owlapi.proof.util.ProofStep;
 import org.semanticweb.owlapi.model.OWLAxiom;
@@ -46,6 +46,6 @@ public interface OWLProofStep extends ProofStep<OWLAxiom> {
 	 *         this inference is derived
 	 */
 	@Override
-	Collection<? extends OWLProofNode> getPremises();
+	List<? extends OWLProofNode> getPremises();
 
 }

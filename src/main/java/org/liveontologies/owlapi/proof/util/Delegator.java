@@ -22,22 +22,45 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.List;
+/**
+ * A prototype that can be used for delegating method calls to a provided
+ * delegate object. Instances of this class are compared by comparing the
+ * corresponding delegate objects.
+ * 
+ * 
+ * @author Yevgeny Kazakov
+ *
+ * @param <D>
+ */
+public class Delegator<D> {
 
-public class CachingProofStep<C> extends DelegatingProofStep<C> {
+	private final D delegate_;
 
-	private List<? extends ProofNode<C>> premises_ = null;
+	Delegator(D delegate) {
+		this.delegate_ = delegate;
+	}
 
-	protected CachingProofStep(ProofStep<C> delegate) {
-		super(delegate);
+	public final D getDelegate() {
+		return delegate_;
 	}
 
 	@Override
-	public List<? extends ProofNode<C>> getPremises() {
-		if (premises_ == null) {
-			premises_ = getDelegate().getPremises();
+	public final boolean equals(Object o) {
+		if (o instanceof Delegator<?>) {
+			return delegate_.equals(((Delegator<?>) o).delegate_);
 		}
-		return premises_;
+		// else
+		return false;
+	}
+
+	@Override
+	public final int hashCode() {
+		return delegate_.hashCode();
+	}
+
+	@Override
+	public final String toString() {
+		return delegate_.toString();
 	}
 
 }

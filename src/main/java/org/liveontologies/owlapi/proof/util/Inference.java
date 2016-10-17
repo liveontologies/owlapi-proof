@@ -22,7 +22,7 @@ package org.liveontologies.owlapi.proof.util;
  * #L%
  */
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A general type of inferences, which can be used in proofs. If all premises of
@@ -50,6 +50,6 @@ public interface Inference<C> {
 	 * @return the premises from which the conclusion of this inference is
 	 *         derived
 	 */
-	Collection<? extends C> getPremises();
+	List<? extends C> getPremises();
 
 }
