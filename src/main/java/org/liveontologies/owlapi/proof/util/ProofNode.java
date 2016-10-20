@@ -24,6 +24,14 @@ package org.liveontologies.owlapi.proof.util;
 
 import java.util.Collection;
 
+/**
+ * Represents (possibly recursive) derivations for the given conclusion
+ * 
+ * @author Yevgeny Kazakov
+ *
+ * @param <C>
+ *            the type of conclusions in derivations represented by this node
+ */
 public interface ProofNode<C> {
 
 	C getMember();

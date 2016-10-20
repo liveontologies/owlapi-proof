@@ -27,6 +27,11 @@ import java.util.Collection;
 import org.liveontologies.owlapi.proof.util.ProofNode;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
+/**
+ * Represents (possibly recursive) derivations for the given {@link OWLAxiom}
+ * 
+ * @author Yevgeny Kazakov
+ */
 public interface OWLProofNode extends ProofNode<OWLAxiom> {
 
 	@Override
@@ -34,5 +39,20 @@ public interface OWLProofNode extends ProofNode<OWLAxiom> {
 
 	@Override
 	Collection<? extends OWLProofStep> getInferences();
+
+	public void addListener(ChangeListener listener);
+
+	public void removeListener(ChangeListener listener);
+
+	static interface ChangeListener {
+
+		/**
+		 * is called when methods called on this node (possibly recursively) may
+		 * produce different results, i.e., if the structure of the proof
+		 * represented by this node has changed
+		 */
+		void nodeChanged();
+
+	}
 
 }

@@ -23,9 +23,8 @@ package org.liveontologies.owlapi.proof.util;
  */
 
 /**
- * A general type of inferences, which can be used in proofs. If all premises of
- * an inference are provable, then one can prove its conclusion by applying this
- * inference.
+ * Represents an inference step in which a conclusion represented by a proof
+ * node is obtained from premises represented by other proof nodes.
  * 
  * @author Yevgeny Kazakov
  *
