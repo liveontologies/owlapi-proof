@@ -46,4 +46,9 @@ public class DelegatingProofStep<C> extends Delegator<ProofStep<C>>
 		return getDelegate().getPremises();
 	}
 
+	@Override
+	public Inference<C> getExample() {
+		return getDelegate().getExample();
+	}
+
 }

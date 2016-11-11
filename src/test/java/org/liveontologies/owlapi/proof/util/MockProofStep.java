@@ -84,4 +84,9 @@ public class MockProofStep<C> implements ProofStep<C> {
 		return name_ + premises_ + " |- " + conclusion_;
 	}
 
+	@Override
+	public Inference<C> getExample() {
+		return null;
+	}
+
 }

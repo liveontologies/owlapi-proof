@@ -33,4 +33,12 @@ package org.liveontologies.owlapi.proof.util;
  */
 public interface ProofStep<C> extends Inference<ProofNode<C>> {
 
+	/**
+	 * @return an example of an inference used in this step, which can be used
+	 *         for explanation purpose. Usually it is an inference instantiated
+	 *         with some generic parameters. If {@code null}, no example is
+	 *         provided.
+	 */
+	Inference<C> getExample();
+
 }

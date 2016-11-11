@@ -68,4 +68,10 @@ class ExtendedProofNode<C> extends ConvertedProofNode<C>
 		return Collections.emptyList();
 	}
 
+	@Override
+	public Inference<C> getExample() {
+		// this inference should not be displayed
+		return null;
+	}
+
 }
