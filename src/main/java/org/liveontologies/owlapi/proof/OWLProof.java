@@ -1,5 +1,7 @@
 package org.liveontologies.owlapi.proof;
 
+import org.semanticweb.owlapi.model.OWLAxiom;
+
 /*-
  * #%L
  * OWL API Proof Extension
@@ -22,27 +24,26 @@ package org.liveontologies.owlapi.proof;
  * #L%
  */
 
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import org.semanticweb.owlapi.reasoner.UnsupportedEntailmentTypeException;
-
 /**
- * An {@link OWLReasoner} that can provide proofs for the entailed axioms.
- * 
- * @author Pavel Klinov
- * 
- *         pavel.klinov@uni-ulm.de
+ * An object from which derivations of an {@link OWLAxiom} can be accessed and
+ * monitored for changes
  * 
  * @author Yevgeny Kazakov
+ *
  */
-public interface OWLProver extends OWLReasoner {
+public interface OWLProof {
 
 	/**
-	 * @param entailment
-	 * @return the proof for the entailment provided by the reasoner
-	 * @throws UnsupportedEntailmentTypeException
+	 * @return the node representing the last inference steps made to derive the
+	 *         final conclusion; the derivation for premises used in these
+	 *         inference steps can be unfolded recursively
 	 */
-	public OWLProof getProof(OWLAxiom entailment)
-			throws UnsupportedEntailmentTypeException;
+	OWLProofNode getRoot();
+
+	void addListener(ProofChangeListener listener);
+
+	void removeListener(ProofChangeListener listener);
+
+	void dispose();
 
 }

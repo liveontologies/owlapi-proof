@@ -23,24 +23,48 @@ package org.liveontologies.owlapi.proof;
  */
 
 import java.util.Collection;
+import java.util.Collections;
 
-import org.liveontologies.owlapi.proof.util.ProofNode;
+import org.liveontologies.owlapi.proof.util.LeafProofNode;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**
- * Represents (possibly recursive) derivations for the given {@link OWLAxiom}
- * member. All {@link OWLProofStep} inferences returned by
- * {@link #getInferences()} must have this member as a conclusion, but it is not
- * required that there should be at least one such an inference.
+ * Represents a trivial derivation for an {@link OWLAxiom} when this axiom is
+ * derived by no inferences. This proof cannot change.
  * 
  * @author Yevgeny Kazakov
  */
-public interface OWLProofNode extends ProofNode<OWLAxiom> {
+public class DummyOWLProof extends LeafProofNode<OWLAxiom>
+		implements OWLProofNode, OWLProof {
+
+	public DummyOWLProof(OWLAxiom member) {
+		super(member);
+	}
 
 	@Override
-	OWLAxiom getMember();
+	public Collection<? extends OWLProofStep> getInferences() {
+		return Collections.emptyList();
+	}
 
 	@Override
-	Collection<? extends OWLProofStep> getInferences();
+	public OWLProofNode getRoot() {
+		return this;
+	}
+
+	@Override
+	public void addListener(ProofChangeListener listener) {
+		// proof cannot change
+
+	}
+
+	@Override
+	public void removeListener(ProofChangeListener listener) {
+		// proof cannot change
+	}
+
+	@Override
+	public void dispose() {
+		// no-op
+	}
 
 }
