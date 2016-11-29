@@ -24,7 +24,7 @@ package org.liveontologies.owlapi.proof;
 
 import java.util.Collection;
 
-import org.liveontologies.owlapi.proof.util.ProofNode;
+import org.liveontologies.proof.util.ProofNode;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 /**

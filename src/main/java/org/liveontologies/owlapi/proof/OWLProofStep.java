@@ -24,7 +24,7 @@ package org.liveontologies.owlapi.proof;
 
 import java.util.List;
 
-import org.liveontologies.owlapi.proof.util.ProofStep;
+import org.liveontologies.proof.util.ProofStep;
 import org.semanticweb.owlapi.model.OWLAxiom;
 
 public interface OWLProofStep extends ProofStep<OWLAxiom> {
