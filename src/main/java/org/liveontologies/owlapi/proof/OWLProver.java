@@ -1,5 +1,7 @@
 package org.liveontologies.owlapi.proof;
 
+import org.liveontologies.proof.util.DynamicInferenceSet;
+
 /*-
  * #%L
  * OWL API Proof Extension
@@ -39,10 +41,12 @@ public interface OWLProver extends OWLReasoner {
 
 	/**
 	 * @param entailment
-	 * @return the proof for the entailment provided by the reasoner
+	 * @return the inferences using which the entailment can be derived from the
+	 *         axioms in the ontology
 	 * @throws UnsupportedEntailmentTypeException
+	 *             if the proof cannot be provided for the given entailment type
 	 */
-	public OWLProof getProof(OWLAxiom entailment)
+	public DynamicInferenceSet<OWLAxiom> getProof(OWLAxiom entailment)
 			throws UnsupportedEntailmentTypeException;
 
 }
