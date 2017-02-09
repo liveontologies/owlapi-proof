@@ -1,6 +1,6 @@
 package org.liveontologies.owlapi.proof;
 
-import org.liveontologies.proof.util.DynamicInferenceSet;
+import org.liveontologies.puli.DynamicInferenceSet;
 
 /*-
  * #%L
