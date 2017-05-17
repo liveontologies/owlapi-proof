@@ -1,7 +1,3 @@
-package org.liveontologies.owlapi.proof;
-
-import org.liveontologies.puli.DynamicInferenceSet;
-
 /*-
  * #%L
  * OWL API Proof Extension
@@ -23,7 +19,9 @@ import org.liveontologies.puli.DynamicInferenceSet;
  * limitations under the License.
  * #L%
  */
+package org.liveontologies.owlapi.proof;
 
+import org.liveontologies.puli.DynamicProof;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.UnsupportedEntailmentTypeException;
@@ -46,7 +44,7 @@ public interface OWLProver extends OWLReasoner {
 	 * @throws UnsupportedEntailmentTypeException
 	 *             if the proof cannot be provided for the given entailment type
 	 */
-	public DynamicInferenceSet<OWLAxiom> getProof(OWLAxiom entailment)
+	public DynamicProof<OWLAxiom> getProof(OWLAxiom entailment)
 			throws UnsupportedEntailmentTypeException;
 
 }
