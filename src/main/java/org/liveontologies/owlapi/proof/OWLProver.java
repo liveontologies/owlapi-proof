@@ -22,6 +22,10 @@
 package org.liveontologies.owlapi.proof;
 
 import org.liveontologies.puli.DynamicProof;
+import org.liveontologies.puli.Inference;
+import org.liveontologies.puli.Inferences;
+import org.liveontologies.puli.Proof;
+import org.liveontologies.puli.Proofs;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.UnsupportedEntailmentTypeException;
@@ -40,7 +44,10 @@ public interface OWLProver extends OWLReasoner {
 	/**
 	 * @param entailment
 	 * @return the inferences using which the entailment can be derived from the
-	 *         axioms in the ontology
+	 *         axioms in the ontology. The inferences deriving the axioms in the
+	 *         ontology can be tested using
+	 *         {@link Inferences#isAsserted(Inference)} and removed from the
+	 *         proof using {@link Proofs#removeAssertedInferences(Proof)}.
 	 * @throws UnsupportedEntailmentTypeException
 	 *             if the proof cannot be provided for the given entailment type
 	 */
