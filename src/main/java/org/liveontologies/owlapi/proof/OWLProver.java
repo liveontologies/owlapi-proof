@@ -51,7 +51,7 @@ public interface OWLProver extends OWLReasoner {
 	 * @throws UnsupportedEntailmentTypeException
 	 *             if the proof cannot be provided for the given entailment type
 	 */
-	public DynamicProof<OWLAxiom> getProof(OWLAxiom entailment)
+	public DynamicProof<? extends Inference<OWLAxiom>> getProof(OWLAxiom entailment)
 			throws UnsupportedEntailmentTypeException;
 
 }
