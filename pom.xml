@@ -13,6 +13,8 @@
 		Extension to the OWL API interfaces to represent and manipulate with proofs.
 	</description>
 
+	<url>https://github.com/liveontologies/${project.artifactId}</url>
+
 	<scm>
 		<connection>scm:git:https://github.com/liveontologies/${project.artifactId}.git</connection>
 		<developerConnection>scm:git:git@github.com:liveontologies/${project.artifactId}.git</developerConnection>
