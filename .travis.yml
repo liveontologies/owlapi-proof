@@ -3,8 +3,6 @@ git:
   depth: 3
 matrix:
   include:
-  - jdk: oraclejdk7
-    dist: precise
   - jdk: openjdk7
   - jdk: oraclejdk8
     env: DEPLOY=true
